@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const productRouters = require('./routes/productsRoutes');
 const userRoute = require('./routes/userRoute');
+const category = require('./routes/categoryRoutes')
 require('dotenv').config();
 
 
@@ -35,6 +36,7 @@ database.once('connected', () => {
 
 app.use('/api/product', productRouters); // Define product routes
 app.use('/api/user', userRoute); // Define user routes
+app.use('/api/category', category);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

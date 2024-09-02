@@ -1,26 +1,39 @@
-// backend/middleware/auth.js
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/userModel');
 
-
 const authorise = async(req, res, next) => {
     const token = req.header('Authorization');
-    const BearerWord = (token.split(" ")[0]).trim();
-    const BearerToken = token.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "No Token, Authorization denied" });
+    }
+
+    const [BearerWord, BearerToken] = token.split(" ");
 
     if (BearerWord !== "Bearer") {
         return res.status(403).json({ message: "Invalid Header" });
     }
+
     if (!BearerToken) {
         return res.status(401).json({ message: "No Token, Authorization denied" });
     }
+
     try {
         const decoded = jwt.verify(BearerToken, process.env.JWT_SECRET);
-        req.user = decoded.userId;
+        console.log('Decoded JWT:', decoded); // Add this log to inspect the decoded token
+
+        const user = await User.findById(decoded.userId).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        req.user = user;
         next();
     } catch (error) {
-        res.status(401).send({ error: 'Token is not valid' });
+        console.error('JWT Verification Error:', error.message); // Add error message logging
+        res.status(401).json({ error: 'Token is not valid' });
     }
 };
 
