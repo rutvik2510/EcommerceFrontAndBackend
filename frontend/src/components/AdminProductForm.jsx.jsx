@@ -48,7 +48,7 @@ const AddProduct = () => {
     formData.append('quantity', quantity);
 
     try {
-      await axios.post('http://localhost:5000/api/products/createProduct', formData, {
+      await axios.post('http://localhost:5000/api/product/products', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
