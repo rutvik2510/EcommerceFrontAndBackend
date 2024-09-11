@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const productRouters = require('./routes/productsRoutes');
 const userRoute = require('./routes/userRoute');
-const category = require('./routes/categoryRoutes')
+const category = require('./routes/categoryRoutes');
+const fileRoute = require('./routes/fileUploadApi')
+
 require('dotenv').config();
 
 
@@ -34,9 +36,11 @@ database.once('connected', () => {
     console.log('Connected to database');
 });
 
-app.use('/api/product', productRouters); // Define product routes
 app.use('/api/user', userRoute); // Define user routes
 app.use('/api/category', category);
+app.use('/api/product', productRouters); // Define product routes
+app.use('/api/file', fileRoute);
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

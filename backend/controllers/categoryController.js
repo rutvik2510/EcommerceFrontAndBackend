@@ -1,4 +1,4 @@
-const Category = require('../models/categoryModel');
+const Category = require('../modules/categoryModel');
 
 // Create a new category
 async function createCategory(req, res) {
@@ -16,7 +16,7 @@ async function createCategory(req, res) {
             name,
             createdBy: req.user.id // Ensure that req.user is populated by authentication middleware
         });
-        console.log('User ID:', req.user.id);
+         console.log('User ID:', req.user.id);
 
 
         const savedCategory = await category.save();

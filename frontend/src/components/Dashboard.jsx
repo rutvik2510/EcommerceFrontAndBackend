@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import  UserSidebar  from "./Sidebar/UserSidebar";
 import  AdminSidebar  from "./Sidebar/AdminSidebar";
- import ProductForm from './AdminProductForm.jsx.jsx';
+ import ProductForm from './AdminProductForm.jsx';
 
 function Dashboard() {
   const [user, setUser] = useState({ name: '', role: '' });

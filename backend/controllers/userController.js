@@ -38,7 +38,7 @@
 // }
 
 // backend/controllers/userController.js
-const User = require('../models/userModel');
+const User = require('../modules/userModel');
 const jwt = require('jsonwebtoken');
 
 function generateToken(user) {
@@ -68,6 +68,7 @@ async function loginUser(req, res) {
         res.status(500).send(error);
     }
 }
+
 
 module.exports = {
     registerUser,

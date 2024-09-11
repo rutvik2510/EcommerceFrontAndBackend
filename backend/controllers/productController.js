@@ -1,46 +1,50 @@
-const Product = require('../models/products');
+const Product = require('../modules/products');
+const express = require('express');
 
 
+// Route to handle adding a product
 async function createProduct(req, res) {
     try {
-        const { name, category, price, availability, quantity } = req.body;
-        const image = req.file ? req.file.filename : null;
+        // Extract fields from the request body
+        const { name, image, category, price, available, quantity, createdBy } = req.body;
 
-        // Check if the product already exists (optional)
-        let product = await Product.findOne({ name });
-        if (product) {
-            return res.status(400).json({ msg: 'Product already exists' });
+        // Check if required fields are provided
+        if (!createdBy) {
+            return res.status(400).json({ message: 'CreatedBy field is required.' });
         }
 
-        // Create a new product instance
-        product = new Product({
+        // Create new product
+        const newProduct = new Product({
             name,
             image,
             category,
             price,
-            availability,
+            available,
             quantity,
-            createdBy: req.user.id,
+            createdBy: req.user.id, // Include createdBy field
         });
 
-        // Save the product to the database
-        await product.save();
-        res.status(201).json(product);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        console.log(newProduct);
+
+        // Save product to the database
+        await newProduct.save();
+
+        // Send success response
+        res.status(201).json({ message: 'Product added successfully!' });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error adding product.', error });
     }
 };
-
 
 async function getAllProduct(req, res) {
     try {
         const products = await Product.find();
-        // Modify each person object to include fullName, profileImage, and other necessary fields
-        const modifiedProducts = people.map(product => ({
+        // Modify each product object to include necessary fields
+        const modifiedProducts = products.map(product => ({
             id: product._id,
             name: product.name,
-            productImage: product.image ? `http://localhost:5002/uploads/${product.image}` : null,
+            productImage: product.image ? `http://localhost:5000/uploads/${product.image}` : null,
             category: product.category,
             price: product.price,
             availability: product.available ? 'InStock' : 'OutOfStock',
@@ -54,6 +58,7 @@ async function getAllProduct(req, res) {
         res.status(500).send('Server error');
     }
 };
+
 
 async function deleteProduct(req, res) {
     try {
@@ -126,20 +131,3 @@ module.exports = {
     updateProduct,
     getProductById
 };
-
-
-
-
-
-
-// exports.updateProduct = async (req, res) => {
-//     try {
-//         const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-//         if (!product) {
-//             return res.status(404).send({ message: 'Product not found' });
-//         }
-//         res.status(200).send({ message: `Product with name ${product.name} updated successfully`, product });
-//     } catch (error) {
-//         res.status(500).send({ message: error.message });
-//     }
-// };

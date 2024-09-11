@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-//const { protect, admin } = require('../middleware/auth');
 const {
     createProduct,
     updateProduct,
@@ -9,20 +8,28 @@ const {
     getProductByCategoryName,
     getProductById
 } = require('../controllers/productController');
+const authorise = require("../middleware/auth");
 
 
-router.post('/products', createProduct);
 
 
-router.put('/products/:id', updateProduct);
-router.put('/products/:id', getProductById);
 
-router.delete('/products/:id', deleteProduct);
+// Route to create a product - requires authorization
+router.post('/addProducts', authorise, createProduct);
 
+// Route to update a product - should be a PUT request, and it requires authorization
+router.put('/updateProduct/:id', authorise, updateProduct);
 
-router.get('/products', getAllProduct);
+// Route to get product by ID - should be a GET request
+router.get('/getProductById/:id', getProductById);
 
+// Route to delete a product - should be a DELETE request, and it requires authorization
+router.delete('/deleteProduct/:id', authorise, deleteProduct);
 
-router.get('/products/category/:categoryname', getProductByCategoryName);
+// Route to get all products - no authorization required
+router.get('/getAllProduct', getAllProduct);
+
+// Route to get products by category name - no authorization required
+router.get('/getProductByCategoryName/:categoryname', getProductByCategoryName);
 
 module.exports = router;
